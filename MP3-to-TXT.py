@@ -1,13 +1,19 @@
 import whisper
 import torch
 import os
+import sys
 
 # Check if NVIDIA GPU is available
 torch.cuda.is_available()
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
+level = "base"
+if len(sys.argv) == 2:
+    level = sys.argv[1]
+print("Using model level:" level)
+
 # Load the Whisper model:
-model = whisper.load_model("base", device=DEVICE)
+model = whisper.load_model(level, device=DEVICE)
 
 def transcribe(filename):
     # Let's get the transcript of the temporary file.
