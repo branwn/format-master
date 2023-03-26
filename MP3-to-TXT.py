@@ -10,7 +10,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 level = "base"
 if len(sys.argv) == 2:
     level = sys.argv[1]
-print("Using model level:" level)
+print("Using model level:", level)
 
 # Load the Whisper model:
 model = whisper.load_model(level, device=DEVICE)
