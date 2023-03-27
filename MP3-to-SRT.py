@@ -2,6 +2,8 @@ import whisper
 import torch
 import os
 import sys
+from datetime import timedelta
+
 
 # Check if NVIDIA GPU is available
 torch.cuda.is_available()
@@ -15,13 +17,25 @@ print("Using model level:", level)
 # Load the Whisper model:
 model = whisper.load_model(level, device=DEVICE)
 
-def transcribe(filename):
+def transcribe_to_srt(filename):
     # Let's get the transcript of the temporary file.
     if DEVICE == "cpu":
-        result = model.transcribe(filename, fp16=False)
+        transcribe = model.transcribe(filename, fp16=False)
     else:
-        result = model.transcribe(filename)
-    return result['segments']
+        transcribe = model.transcribe(filename)
+
+    results = []
+    segments = transcribe['segments']
+    for segment in segments:
+        startTime = str(0)+str(timedelta(seconds=int(segment['start'])))+',000'
+        endTime = str(0)+str(timedelta(seconds=int(segment['end'])))+',000'
+        text = segment['text']
+        segmentId = segment['id']+1
+        segment = f"{segmentId}\n{startTime} --> {endTime}\n{text[1:] if text[0] is ' ' else text}\n\n"
+        results.append(segment)
+        
+    return results
+
 
 
 # set directory containing audios
@@ -39,10 +53,10 @@ for filename in os.listdir(directory):
         # open mp3 file
         mp3_file = open(os.path.join(directory, filename), 'rb')
 
-        text = transcribe(filename)
+        text = transcribe_to_srt(filename)
 
         # create output text file
-        text_file = open(os.path.join(output_dir, filename.replace('.mp3', '.txt')), 'w')
+        text_file = open(os.path.join(output_dir, filename.replace('.mp3', '.srt')), 'w')
         
         text_file.writelines(text)
 
