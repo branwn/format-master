@@ -21,7 +21,8 @@ def transcribe(filename):
         result = model.transcribe(filename, fp16=False)
     else:
         result = model.transcribe(filename)
-    return result['segments']
+
+    return list(result['segments'].items())
 
 
 # set directory containing audios
@@ -39,6 +40,7 @@ for filename in os.listdir(directory):
         # open mp3 file
         mp3_file = open(os.path.join(directory, filename), 'rb')
 
+        print("Start to transcribe", filename)
         text = transcribe(filename)
 
         # create output text file

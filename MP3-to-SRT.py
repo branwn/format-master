@@ -53,6 +53,7 @@ for filename in os.listdir(directory):
         # open mp3 file
         mp3_file = open(os.path.join(directory, filename), 'rb')
 
+        print("Start to transcribe", filename)
         text = transcribe_to_srt(filename)
 
         # create output text file
