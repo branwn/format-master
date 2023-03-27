@@ -22,7 +22,7 @@ def transcribe(filename):
     else:
         result = model.transcribe(filename)
 
-    return list(result['segments'].items())
+    return result['segments'].items()
 
 
 # set directory containing audios

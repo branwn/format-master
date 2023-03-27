@@ -3,6 +3,7 @@
 
 Vagrant.configure('2') do |config|
   config.vm.define 'ubuntu20' do |builder|
+    builder.vm.synced_folder ".", "/home/vagrant"
     builder.vm.box = 'ubuntu/focal64'
     builder.ssh.insert_key = false
     builder.vm.disk :disk, size: '50GB', primary: true
@@ -20,6 +21,10 @@ Vagrant.configure('2') do |config|
       sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
       systemctl restart sshd.service
       echo root:root | chpasswd
+
+      apt-get update
+      apt-get install -y python3
+      apt-get install -y python3-pip
     SHELL
   end
 end
